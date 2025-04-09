@@ -1,0 +1,39 @@
+{
+  "name": "cmbweb-reactjs-demo",
+  "version": "1.5.5",
+  "author": "Cognex Corporation",
+  "homepage": "./",
+  "private": true,
+  "dependencies": {
+    "cmbsdk-cmbweb": "^1.5.5",
+    "magic-string": "^0.26.1",
+    "react": "^18.1.0",
+    "react-dom": "^18.1.0",
+    "react-scripts": "5.0.1",
+    "react-webcam": "^7.0.1",
+    "shx": "^0.3.4"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "prebuild": "node -e \"var fs = require('fs'); if(!fs.existsSync('src/cmbweb')){fs.mkdirSync('src/cmbweb');}\" && shx cp ../webpack_inline/dist/bundle.js src/cmbweb/bundle.js && node -e \"var MagicString = require('magic-string'); var fs = require('fs'); if(fs.existsSync('src/cmbweb/bundle.js')){fs.readFile('src/cmbweb/bundle.js', 'utf8', function(err,data){const s = new MagicString(data); s.prepend('/* eslint-disable no-unused-expressions */\\n/* eslint-disable no-restricted-globals */\\n/* eslint-disable no-undef */\\n/* eslint-disable */\\n'); fs.writeFileSync('src/cmbweb/bundle.js', s.toString());});}else{console.log('The src/cmbweb/bundle.js file does not exist!');}\"",
+    "build": "react-scripts build",
+    "postbuild": "shx cp -r ../webpack_inline/dist/assets build && shx cp ../webpack_inline/dist/cognex_icon.png build  && shx cp ../webpack_inline/dist/test_img.png build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}
