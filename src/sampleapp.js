@@ -8,9 +8,11 @@ class Trigger extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      barcodeWidthInches: "3.125", // default to 3 1/8 inches
+      barcodeWidthInches: "3.125",
       modulesX: null,
       milSize: null,
+      ppm: null,
+      barcode: null,
     };
   }
 
@@ -29,33 +31,11 @@ class Trigger extends React.Component {
   start = () => {
     mwbScanner.startScanning(
       (result) => {
-        if (result.type === "Error") {
-          console.error("❌ Scanner error:", result.errorDetails);
-        } else if (result.type === "Cancel") {
-          console.log("📭 Scan canceled");
-        } else if (result.type === "NoResult") {
-          console.log("🔍 No barcode detected.");
-        } else if (result.type === "Multicode") {
-          console.log("📦 Multicode scanned");
-          result.codes.forEach((code) => {
-            console.log("Type:", code.type);
-            console.log("Data:", code.code);
-            console.log("PPM:", code.ppm);
-          });
-        } else {
-          console.log("✅ Barcode scanned:");
-          console.log("Type:", result.type);
-          console.log("Code:", result.code);
-          console.log("📐 PPM:", result.ppm ?? "N/A");
-          console.log("🖼️ Image Width:", result.imageWidth ?? "N/A");
-          console.log("🖼️ Image Height:", result.imageHeight ?? "N/A");
-          console.log("📏 Modules X:", result.modulesCountX ?? "N/A");
-          console.log("📏 Modules Y:", result.modulesCountY ?? "N/A");
-          console.log("📐 Module Size X:", result.moduleSizeX ?? "N/A");
-          console.log("📐 Module Size Y:", result.moduleSizeY ?? "N/A");
-
+        if (result && result.modulesCountX) {
           this.setState(
-            { modulesX: result.modulesCountX },
+            {
+              modulesX: result.modulesCountX
+            },
             this.updateMilSize
           );
         }
@@ -65,28 +45,25 @@ class Trigger extends React.Component {
       }
     );
   };
-
+  
   render() {
     return (
-      <div style={{ marginBottom: "1rem" }}>
-        <button onClick={this.start}>Start Scanner</button>
-
-        <div style={{ marginTop: "1rem" }}>
-          <label>
-            Barcode Width (inches):{" "}
-            <input
-              type="number"
-              step="0.001"
-              value={this.state.barcodeWidthInches}
-              onChange={this.handleInputChange}
-              placeholder="e.g. 3.125"
-            />
-          </label>
-        </div>
-
+      <div className="app-container">
+        <label>
+          Barcode Width (inches):
+          <input
+            type="number"
+            value={this.state.barcodeWidthInches}
+            onChange={this.handleInputChange}
+            placeholder="e.g. 3.125"
+          />
+        </label>
+        <button onClick={this.start}>🚀 Start Scanner</button>
         {this.state.milSize && (
-          <div style={{ marginTop: "1rem", fontSize: "1.2rem" }}>
-            ✅ <strong>Mil Size:</strong> {this.state.milSize} mil
+          <div className="result-box">
+            <p>
+              <strong>Mil Size:</strong> {this.state.milSize} mil
+            </p>
           </div>
         )}
       </div>
@@ -94,30 +71,38 @@ class Trigger extends React.Component {
   }
 }
 
+
+
 class Container extends React.Component {
   id = "cmbweb-preview-container";
   divStyle = {
-    border: 'blue',
-    position: 'fixed',
-    top: '25%',
-    left: '25%',
-    width: '50%',
-    height: '30%',
-    backgroundColor: 'gray'
-  };
-  render() {
+  border: "2px solid #ccc",
+  borderRadius: "10px",
+  marginTop: "20px",
+  width: "100%",
+  maxWidth: "640px",
+  height: "360px",
+  backgroundColor: "#eee",
+  overflow: "hidden",
+  position: "relative",
+};
+
+    render() {
     return <div id={this.id} style={this.divStyle} />;
   }
 }
 
+
 class SampleApp extends React.Component {
   render() {
     return (
-      <React.Fragment>
-        <Trigger />
-        <br />
-        <Container />
-      </React.Fragment>
+      <div className="page-wrapper">
+        <div className="app-container">
+          <h1>📦 Barcode Mil Size Scanner</h1>
+          <Trigger />
+          <Container />
+        </div>
+      </div>
     );
   }
 }
