@@ -22,6 +22,19 @@
     <title>React App</title>
   </head>
   <body>
+    <!-- Cognex cmbWEB SDK -->
+<script src="%PUBLIC_URL%/cmbweb.js"></script>
+<script>
+  document.addEventListener("scannerModuleLoaded", function () {
+    console.log("✅ Scanner module loaded");
+
+    // Optionally set license image
+    if (window.mwbScanner) {
+      mwbScanner.setIcon("cognex_icon.png"); // adjust path if needed
+    }
+  });
+</script>
+
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root"></div>
     <!--
